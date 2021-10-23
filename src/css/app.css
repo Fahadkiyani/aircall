@@ -25,7 +25,7 @@
   padding: 20px;
 } */
 
-.CallLogsContainer{
+.CallLogsContainer {
   overflow: hidden;
   overflow-y: scroll;
 }
@@ -37,6 +37,35 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .CallLogsContainer {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* archive all call container */
+.archive_all_calls_container {
+  color: #dedede;
+  background-color: #444;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  padding: 40px 25px 10px 25px;
+  border: 2px solid #dedede;
+  max-width: 80%;
+  margin: -50px auto 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.archive_all_calls_container:hover,.archive_all_calls_container:hover .archive_all_calls_text{
+  background-color: rgba(255, 255, 255, 0.51);
+color: #444;
+}
+.archive_all_calls_text {
+  font-size: 1rem;
+  margin-left: 5px;
+  font-weight: 700;
+  color:#444;
+  font-size: 14px;
+  color: #dedede;
 }

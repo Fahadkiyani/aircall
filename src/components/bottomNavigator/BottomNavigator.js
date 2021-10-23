@@ -31,7 +31,6 @@ export default function LabelBottomNavigation() {
         value="archived"
         icon={value === 'archived'?<ArchiveIcon style={{color:'#444',fontSize:22,fontWeight:100}} />:<ArchiveOutlinedIcon  style={{color:'#666'}}/>}
       />
-
     </BottomNavigation>
   );
 }
