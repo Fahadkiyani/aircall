@@ -12,7 +12,7 @@ const App = () => {
     let data = await fetchFeeds();
     console.log('Feeds: ',data);
     setFeeds(data);
-    test(data)
+
   }, []);
 
   const fetchFeeds = async () => {
