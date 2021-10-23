@@ -23,24 +23,25 @@ const App = () => {
     // console.log('Data: ', data.data);
     return data.data;
   }
-let counter =-1;
+
+  let counter = -1;
+
   return (
     <div className='container'>
       <Header heading="Activity" />
       {/* call logs container */}
       <div className="CallLogsContainer" style={{ backgroundColor: 'rgba(200,200,210,0.1)', height: '100%', paddingTop: 20, paddingRight: 20 }}>
-      
-      <div className='archive_all_calls_container' onClick={()=>{alert('are you sure')}}>
-      <ArchiveTwoToneIcon  />
-       <h1 className="archive_all_calls_text">
-         Archive all calls
-       </h1>
-     </div>
-      {/* <HeaderSubParts /> */}
-        {Feeds.map((data,i,length) => {
+        <div className='archive_all_calls_container' onClick={() => { alert('are you sure') }}>
+          <ArchiveTwoToneIcon />
+          <h1 className="archive_all_calls_text">
+            Archive all calls
+          </h1>
+        </div>
+        {/* <HeaderSubParts /> */}
+        {Feeds.map((data, i, length) => {
           if (data.is_archived === false) {
-            counter =counter +2 ;
-          }else if (i+1 === length && counter < 0) {
+            counter = counter + 2;
+          } else if (i + 1 === length && counter < 0) {
             counter = 0;
           }
           return (
@@ -48,7 +49,7 @@ let counter =-1;
           )
         })}
         <div>
-          {counter === 0?<div style={{width:'100%',height:60,display:'flex',justifyContent:'center',alightItems:'flex-end'}}>No active feeds to show</div>:<></>}
+          {counter === 0 ? <div style={{ width: '100%', height: 60, display: 'flex', justifyContent: 'center', alightItems: 'flex-end' }}>No active feeds to show</div> : <></>}
         </div>
       </div>
       <div className="bottom_navigation_container">
