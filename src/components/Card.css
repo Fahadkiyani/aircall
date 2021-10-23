@@ -42,3 +42,14 @@
     color:#999;
     font-size: 11px;
 }
+.call_info_container{
+    width: 70%;
+    border-right: 2px dotted #e2e2e2;
+    /* background-color: red; */
+}
+.time_container{
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

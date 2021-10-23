@@ -24,6 +24,40 @@ export default function Card(props) {
             )
         }
     }
+
+    const CalledTo = () => {
+        if (props.callType === 'voicemail') {
+            return (
+                <div>
+                    <h3 className="to">
+                        sent a voicemail.
+                    </h3>
+                </div>
+            )
+        }else if (props.callType === 'missed'){
+            return (
+                <div>
+                    <h3 className="to">
+                        tried to call on {props.to}
+                    </h3>
+                </div>
+            )
+
+        }else{
+            return (
+                <div>
+                    <h3 className="to">
+                        called {props.to}
+                    </h3>
+                </div>
+            )
+        }
+    }
+
+    const CallTime=()=>{
+        
+    }
+
     return (
         <>
             <div className='dottedLine'>
@@ -34,17 +68,24 @@ export default function Card(props) {
                     <CallType />
                     {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
                 </div>
-                <div>
+                <div className={"call_info_container"}>
                     <div className="user-name">
                         <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
                             {props.from}
                         </h1>
                     </div>
-                    <div>
+                    {/* called to  */}
+                    {/* <div>
                         <h3 className="to">
                             tried to call on {props.to}
                         </h3>
-                    </div>
+                    </div> */}
+                <CalledTo />
+                </div>
+                <div className="time_container">
+                    <h4>
+
+                    </h4>
                 </div>
 
 
