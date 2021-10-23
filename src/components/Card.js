@@ -4,7 +4,7 @@ import './Card.css';
 import PhoneMissedIcon from '@mui/icons-material/PhoneMissed';
 import VoicemailIcon from '@mui/icons-material/Voicemail';
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
-// import { VoicemailIcon, PhoneMissedIcon, PhoneCallbackIcon } from '@mui/icons-material/';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function Card(props) {
 
@@ -34,7 +34,7 @@ export default function Card(props) {
                     </h3>
                 </div>
             )
-        }else if (props.callType === 'missed'){
+        } else if (props.callType === 'missed') {
             return (
                 <div>
                     <h3 className="to">
@@ -43,7 +43,7 @@ export default function Card(props) {
                 </div>
             )
 
-        }else{
+        } else {
             return (
                 <div>
                     <h3 className="to">
@@ -54,14 +54,57 @@ export default function Card(props) {
         }
     }
 
-    const CallTime=()=>{
-        
+    function tConvert(time) {
+        // Check correct time format and split into components
+        time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+        if (time.length > 1) { // If time format correct
+            time = time.slice(1);  // Remove full string match value
+            time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+            time[0] = +time[0] % 12 || 12; // Adjust hours
+        }
+        return time.join(''); // return adjusted time or original string
+    }
+
+
+
+    const Time = () => {
+        let reg = /T/;
+        let time = props.time;
+        time.toString();
+        let result = reg.exec(time);
+        let stringIs = time.slice(result.index + 1, result.index + 6);
+        let convertTo12H = tConvert(stringIs);
+        return (
+            <h3 className="actual_time">
+                {convertTo12H}
+            </h3>
+        )
+    }
+
+    const Date = ()=>{
+        let reg = /T/;
+        let time = props.time;
+        time.toString();
+        let result = reg.exec(time);
+        let stringIs = time.slice(0,result.index);
+        let convertTo12H = tConvert(stringIs);
+        return (
+            <h3 className="date_text">
+                {convertTo12H}
+            </h3>
+        )
+
     }
 
     return (
         <>
+            <div className="date">
+        <Date />
+            </div>
             <div className='dottedLine'>
             </div>
+
             <div className="Card">
                 <div className="phone-icon">
                     {/* <PhoneMissedIcon className="img" /> */}
@@ -74,18 +117,11 @@ export default function Card(props) {
                             {props.from}
                         </h1>
                     </div>
-                    {/* called to  */}
-                    {/* <div>
-                        <h3 className="to">
-                            tried to call on {props.to}
-                        </h3>
-                    </div> */}
-                <CalledTo />
+                    <CalledTo />
                 </div>
+                <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
                 <div className="time_container">
-                    <h4>
-
-                    </h4>
+                    <Time />
                 </div>
 
 

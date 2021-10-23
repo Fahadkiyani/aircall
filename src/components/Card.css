@@ -1,17 +1,18 @@
-
-.Card{
-    background-color: rgba(255 , 255, 255, 0.51);
+.Card {
+    background-color: rgba(255, 255, 255, 0.51);
     border: 1px solid #f9f9f9;
     /* background-color: aqua; */
- margin:20px 15px;
+    margin: 20px 15px 28px 15px;
     height: 35;
     width: calc(100% - 30px);
     display: flex;
+    cursor: pointer;
     padding: 12px 0 12px 15px;
-    border: 2px solid rgba(200 , 200, 200, 0.51);
+    border: 2px solid rgba(200, 200, 200, 0.51);
     border-radius: 16px;
 }
-.phone-icon{
+
+.phone-icon {
     height: 100%;
     width: 10%;
     display: flex;
@@ -19,7 +20,8 @@
     align-items: center;
     margin-top: 3.5px;
 }
-.phone-icon .img{
+
+.phone-icon .img {
     max-height: 60%;
     width: 60%;
     /* opacity: 0.6; */
@@ -28,28 +30,55 @@
     /* padding: 4px; */
     padding-right: 15px;
 
-    color: rgba(200 , 100, 100, 1);
+    color: rgba(200, 100, 100, 1);
 }
-.dottedLine{
+
+.dottedLine {
     border-top: 2px dotted #e2e2e2;
     /* background-color: red; */
     z-index: 1000;
     position: relative;
     width: calc(100% + 15px);
 }
-.to{
+
+.to {
     padding: 8px 0 0 0;
-    color:#999;
+    color: #999;
     font-size: 11px;
 }
-.call_info_container{
+
+.call_info_container {
     width: 70%;
-    border-right: 2px dotted #e2e2e2;
+    /* border-right: 2px dotted #e2e2e2; */
+    overflow: hidden;
     /* background-color: red; */
 }
-.time_container{
+
+.time_container {
     width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.actual_time {
+    color: #666;
+    font-size: 10px;
+    margin-left: 20%;
+}
+
+.date {
+    position: absolute;
+    margin-top: -5px;
+    background-color:#f9f9f9;
+    border: 1px solid #f9f9f9;
+    width: 100px;
+    /* height: 20px; */
+    text-align: center;
+    z-index: 10000;
+    padding: 2px 0;
+    margin-left: calc(666px / 5);
+}
+.date_text{
+    color:#999;
 }
