@@ -11,7 +11,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 export default function LabelBottomNavigation() {
-  const [value, setValue] = React.useState('feeds');
+  const [value, setValue] = React.useState('Activity');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -22,14 +22,14 @@ export default function LabelBottomNavigation() {
       <BottomNavigationAction
        style={{color:'#00B388',fontWeight:900}}
         label="___"
-        value="feeds"
-        icon={value === 'feeds'?<LocalPhoneIcon style={{color:'#444',fontSize:22,fontWeight:100}} />:<PhoneOutlinedIcon  style={{color:'#666'}}/>}
+        value="Activity"
+        icon={value === 'Activity'?<LocalPhoneIcon style={{color:'#444',fontSize:22,fontWeight:100}} />:<PhoneOutlinedIcon  style={{color:'#666'}}/>}
       />
       <BottomNavigationAction
        style={{color:'#00B388',fontWeight:900}}
         label="___"
-        value="archived"
-        icon={value === 'archived'?<ArchiveIcon style={{color:'#444',fontSize:22,fontWeight:100}} />:<ArchiveOutlinedIcon  style={{color:'#666'}}/>}
+        value="Archived"
+        icon={value === 'Archived'?<ArchiveIcon style={{color:'#444',fontSize:22,fontWeight:100}} />:<ArchiveOutlinedIcon  style={{color:'#666'}}/>}
       />
     </BottomNavigation>
   );

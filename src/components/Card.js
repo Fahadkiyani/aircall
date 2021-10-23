@@ -96,34 +96,40 @@ export default function Card(props) {
         )
 
     }
-
     return (
         <>
-            <div className="date">
-                <Date />
-            </div>
-            <div className='dottedLine'>
-            </div>
+            {
+                props.isArchived === false ?
+                    <>
+                        <div className="date">
+                            <Date />
+                        </div>
+                        <div className='dottedLine'>
+                        </div>
 
-            <div className="Card">
-                <div className="phone-icon">
-                    {/* <PhoneMissedIcon className="img" /> */}
-                    <CallType />
-                    {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
-                </div>
-                <div className={"call_info_container"}>
-                    <div className="user-name">
-                        <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
-                            {props.from}
-                        </h1>
-                    </div>
-                    <CalledTo />
-                </div>
-                <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
-                <div className="time_container">
-                    <Time />
-                </div>
-            </div>
+                        <div className="Card">
+                            <div className="phone-icon">
+                                {/* <PhoneMissedIcon className="img" /> */}
+                                <CallType />
+                                {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
+                            </div>
+                            <div className={"call_info_container"}>
+                                <div className="user-name">
+                                    <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
+                                        {props.from}
+                                    </h1>
+                                </div>
+                                <CalledTo />
+                            </div>
+                            <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
+                            <div className="time_container">
+                                <Time />
+                            </div>
+                        </div>
+                    </>
+                    : <></>
+            }
         </>
+
     )
 }
