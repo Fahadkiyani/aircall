@@ -83,3 +83,12 @@
 .date_text{
     color:#999;
 }
+
+
+/* Bottom navigation */
+.bottom_navigation_container{
+    max-width: 50%;
+    /* height: 10px; */
+    overflow: hidden;
+    /* background-color: red; */
+}

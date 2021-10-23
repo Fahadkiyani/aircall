@@ -82,12 +82,12 @@ export default function Card(props) {
         )
     }
 
-    const Date = ()=>{
+    const Date = () => {
         let reg = /T/;
         let time = props.time;
         time.toString();
         let result = reg.exec(time);
-        let stringIs = time.slice(0,result.index);
+        let stringIs = time.slice(0, result.index);
         let convertTo12H = tConvert(stringIs);
         return (
             <h3 className="date_text">
@@ -100,7 +100,7 @@ export default function Card(props) {
     return (
         <>
             <div className="date">
-        <Date />
+                <Date />
             </div>
             <div className='dottedLine'>
             </div>
@@ -123,8 +123,6 @@ export default function Card(props) {
                 <div className="time_container">
                     <Time />
                 </div>
-
-
             </div>
         </>
     )
