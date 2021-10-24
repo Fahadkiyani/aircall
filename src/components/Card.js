@@ -14,7 +14,9 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeReload } from '../Redux/Slice';
+// import SetActiveFeedsToArchive from '../Redux/API_Data';
+import { SetArchivedFeeds, SetActiveFeeds,SetArchivedFeedsToActive , SetActiveFeedsToArchive } from '../Redux/API_Data.js';
+
 
 export default function Card({ d }) {
 
@@ -121,35 +123,34 @@ export default function Card({ d }) {
         setIsArchiveShow(!isArchiveShow)
     }
 
-    const archiveElement = (id) => {
-        axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
+    const archiveElement = async (id) => {
+    await axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
             is_archived: true
         })
             .then(function (response) {
                 console.log(response);
-                dispatch(changeReload({ reload: true }))
+                dispatch(SetActiveFeedsToArchive({id:id}))
             })
             .catch(function (error) {
                 console.log(error);
             });
-
     }
     const unArchiveElement = (id) => {
         axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
             is_archived: false
         }).then(function (response) {
             console.log(response);
-            dispatch(changeReload({ reload: false }))
+            dispatch(SetArchivedFeedsToActive({id:id}))
         })
             .catch(function (error) {
                 console.log(error);
             });
-        
+
     }
 
     console.log('test no.23 : /\n  ', d);
 
-    if (Title === "Active Feeds") {
+    if (Title === "Active Feeds" && d.is_archived !== true) {
         return (
 
             <div>
@@ -203,7 +204,6 @@ export default function Card({ d }) {
         )
     } else {
         return (
-
             <div>
                 <div className="date">
                     <Date created_at={d.created_at} />

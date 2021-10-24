@@ -21,8 +21,6 @@ import './css/app.css'
 
 
 const App = () => {
-  // const [ActiveFeeds, setActiveFeeds] = useState([]);
-  // const [ArchivedFeeds, setArchivedFeeds] = useState([]);
   // Reading Data from Redux store. 
   const myActiveFeeds = useSelector(state => state.API_Data.ActiveFeeds);
   const myArchivedFeeds = useSelector(state => state.API_Data.ArchivedFeeds);
@@ -45,12 +43,8 @@ const App = () => {
       if (i + 1 === data.length) {
         dispatch(SetActiveFeeds({ activefeeds }));
         dispatch(SetArchivedFeeds({ archivedfeeds }));
-        // setActiveFeeds(activefeeds);
-        // setArchivedFeeds(archivedfeeds);
       }
     }
-    // activefeeds.length=0;
-    // archivedfeeds.length=0;
   }, []);
 
 
