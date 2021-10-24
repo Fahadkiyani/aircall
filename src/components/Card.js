@@ -9,17 +9,33 @@ import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import OutboundTwoToneIcon from '@mui/icons-material/OutboundTwoTone';
 import DirectionsIcon from '@mui/icons-material/Directions';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 
 import axios from 'axios';
-export default function Card(props) {
-    const [isArchiveShow, setIsArchiveShow] = React.useState(false)
 
-    const CallType = () => {
-        if (props.callType === "missed") {
+import { useSelector, useDispatch } from 'react-redux';
+import { changeReload } from '../Redux/Slice';
+
+export default function Card({ d }) {
+
+    const [isArchiveShow, setIsArchiveShow] = React.useState(false);
+    const [elementDelete, setElementDelete] = React.useState(false);
+    const [expandMe, setExpandMe] = React.useState(0)
+
+    // selecting values from redux store
+    const myActiveFeeds = useSelector(state => state.API_Data.ActiveFeeds);
+    const myArchivedFeeds = useSelector(state => state.API_Data.ArchivedFeeds);
+    const Title = useSelector(state => state.changeSlice.title);
+
+    // dispatch variable
+    let dispatch = useDispatch();
+
+    const CallType = ({ call_type }) => {
+        if (call_type === "missed") {
             return (
                 <PhoneMissedIcon className="img" />
             )
-        } else if (props.callType === "voicemail") {
+        } else if (call_type === "voicemail") {
             return (
                 <VoicemailIcon className="img" style={{ color: 'rgba(100 , 100, 200, 1)' }} />
             )
@@ -30,8 +46,8 @@ export default function Card(props) {
         }
     }
 
-    const CalledTo = () => {
-        if (props.callType === 'voicemail') {
+    const CalledTo = ({ call_type, to }) => {
+        if (call_type === 'voicemail') {
             return (
                 <div>
                     <h3 className="to">
@@ -39,11 +55,11 @@ export default function Card(props) {
                     </h3>
                 </div>
             )
-        } else if (props.callType === 'missed') {
+        } else if (call_type === 'missed') {
             return (
                 <div>
                     <h3 className="to">
-                        tried to call on {props.to}
+                        tried to call on {to}
                     </h3>
                 </div>
             )
@@ -52,7 +68,7 @@ export default function Card(props) {
             return (
                 <div>
                     <h3 className="to">
-                        called {props.to}
+                        called {to}
                     </h3>
                 </div>
             )
@@ -73,9 +89,9 @@ export default function Card(props) {
 
 
 
-    const Time = () => {
+    const Time = ({ created_at }) => {
         let reg = /T/;
-        let time = props.time;
+        let time = created_at;
         time.toString();
         let result = reg.exec(time);
         let stringIs = time.slice(result.index + 1, result.index + 6);
@@ -87,9 +103,9 @@ export default function Card(props) {
         )
     }
 
-    const Date = () => {
+    const Date = ({ created_at }) => {
         let reg = /T/;
-        let time = props.time;
+        let time = created_at;
         time.toString();
         let result = reg.exec(time);
         let stringIs = time.slice(0, result.index);
@@ -101,7 +117,7 @@ export default function Card(props) {
         )
     }
 
-    const mouseEnters = () => {
+    const mouseEnters = (id) => {
         setIsArchiveShow(!isArchiveShow)
     }
 
@@ -111,70 +127,132 @@ export default function Card(props) {
         })
             .then(function (response) {
                 console.log(response);
+                dispatch(changeReload({ reload: true }))
             })
             .catch(function (error) {
                 console.log(error);
             });
+
     }
-    return (
-        <>
-            {
-                props.isArchived === false ?
-                    <>
-                        <div className="date">
-                            <Date />
-                        </div>
-                        <div className='dottedLine'>
-                        </div>
+    const unArchiveElement = (id) => {
+        axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
+            is_archived: false
+        }).then(function (response) {
+            console.log(response);
+            dispatch(changeReload({ reload: false }))
+        })
+            .catch(function (error) {
+                console.log(error);
+            });
+        
+    }
 
-                        <div className='card_container'>
-                            <div
-                                onClick={mouseEnters}
-                                className="Card"
-                                style={isArchiveShow === false ? {} : { borderBottomWidth: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
-                            >
+    console.log('test no.23 : /\n  ', d);
 
-                                <div className="phone-icon">
-                                    {/* <PhoneMissedIcon className="img" /> */}
-                                    <CallType />
-                                    {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
-                                </div>
-                                <div className={"call_info_container"}>
-                                    <div className="user-name">
-                                        <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
-                                            {props.from}
-                                        </h1>
-                                    </div>
-                                    <CalledTo />
-                                </div>
-                                <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
-                                <div className="time_container">
-                                    <Time />
-                                </div>
+    if (Title === "Active Feeds") {
+        return (
+
+            <div>
+                <div className="date">
+                    <Date created_at={d.created_at} />
+                </div>
+                <div className='dottedLine'>
+                </div>
+
+                <div className='card_container'>
+                    <div
+                        onClick={() => { mouseEnters() }}
+                        className="Card"
+                        style={isArchiveShow === false ? {} : { borderBottomWidth: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+                    >
+                        <div className="phone-icon">
+                            {/* <PhoneMissedIcon className="img" /> */}
+                            <CallType call_type={d.call_type} />
+                        </div>
+                        <div className={"call_info_container"}>
+                            <div className="user-name">
+                                <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
+                                    {d.from}
+                                </h1>
+                            </div>
+                            <CalledTo call_type={d.call_type} to={d.to} />
+                        </div>
+                        <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
+                        <div className="time_container">
+                            <Time created_at={d.created_at} />
+                        </div>
+                    </div>
+
+                    <div className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
+                        <div className='call_details'>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                {d.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
+                                <MoreVertIcon style={{ color: 'black', fontSize: 12 }} />
+                                <DirectionsIcon />
+                                {d.via}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                <AccessTimeRoundedIcon /> <h6> Duration : </h6> <h5> {d.duration} min</h5>
                             </div>
 
-                            <div onClick={() => {archiveElement(props.id)}} className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
-                                <div className='call_details'>
-                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
-                                        {props.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
-                                        <MoreVertIcon style={{ color: 'black', fontSize: 12 }} />
-                                        <DirectionsIcon />
-                                        {props.via}
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
-                                        <AccessTimeRoundedIcon /> <h6> Duration : </h6> <h5> {props.duration} min</h5>
-                                    </div>
-
-                                </div>
-                                <ArchiveRoundedIcon style={isArchiveShow === false ? { color: 'transparent', borderColor: 'transparent', } : { fontSize: 25, paddingTop: 15, paddingBottom: 15, paddingLeft: 15, paddingRight: 15, color: 'white', cursor: 'pointer', backgroundColor: 'black', borderRadius: 5, marginTop: -8 }} />
-                            </div>
                         </div>
+                        <ArchiveRoundedIcon onClick={() => { archiveElement(d.id) }} style={isArchiveShow === false ? { color: 'transparent', borderColor: 'transparent', } : { fontSize: 25, paddingTop: 15, paddingBottom: 15, paddingLeft: 15, paddingRight: 15, color: 'white', cursor: 'pointer', backgroundColor: 'black', borderRadius: 5, marginTop: -8 }} />
+                    </div>
+                </div>
+            </div>
+        )
+    } else {
+        return (
 
-                    </>
-                    :
-                    <></>
-            }
-        </>
+            <div>
+                <div className="date">
+                    <Date created_at={d.created_at} />
+                </div>
+                <div className='dottedLine'>
+                </div>
 
-    )
+                <div className='card_container'>
+                    <div
+                        onClick={() => { mouseEnters() }}
+                        // onMouseEnter={() => { setExpandMe(d.id); console.log('d.id', d.id); }}
+                        className="Card"
+                        style={isArchiveShow === false ? {} : { borderBottomWidth: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+                    >
+                        <div className="phone-icon">
+                            {/* <PhoneMissedIcon className="img" /> */}
+                            <CallType call_type={d.call_type} />
+                        </div>
+                        <div className={"call_info_container"}>
+                            <div className="user-name">
+                                <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
+                                    {d.from}
+                                </h1>
+                            </div>
+                            <CalledTo call_type={d.call_type} to={d.to} />
+                        </div>
+                        <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
+                        <div className="time_container">
+                            <Time created_at={d.created_at} />
+                        </div>
+                    </div>
+
+                    <div className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
+                        <div className='call_details'>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                {d.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
+                                <MoreVertIcon style={{ color: 'black', fontSize: 12 }} />
+                                <DirectionsIcon />
+                                {d.via}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                <AccessTimeRoundedIcon /> <h6> Duration : </h6> <h5> {d.duration} min</h5>
+                            </div>
+
+                        </div>
+                        <UnarchiveIcon onClick={() => { unArchiveElement(d.id) }} style={isArchiveShow === false ? { color: 'transparent', borderColor: 'transparent', } : { fontSize: 25, paddingTop: 15, paddingBottom: 15, paddingLeft: 15, paddingRight: 15, color: 'white', cursor: 'pointer', backgroundColor: 'black', borderRadius: 5, marginTop: -8 }} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
 }

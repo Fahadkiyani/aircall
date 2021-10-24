@@ -9,57 +9,71 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
 // Import redux
-import store from './Components/CartItems/store';
+import store from './Redux/store';
 import { Provider } from 'react-redux';
-// selector and dispatch
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+
+import { SetArchivedFeeds, SetActiveFeeds } from './Redux/API_Data.js';
 
 import './css/app.css'
 
-let activefeeds = [];
-let archivedfeeds = [];
+
+
+
 const App = () => {
   // const [ActiveFeeds, setActiveFeeds] = useState([]);
   // const [ArchivedFeeds, setArchivedFeeds] = useState([]);
+  // Reading Data from Redux store. 
+  const myActiveFeeds = useSelector(state => state.API_Data.ActiveFeeds);
+  const myArchivedFeeds = useSelector(state => state.API_Data.ArchivedFeeds);
+  const Title = useSelector(state => state.changeSlice.title);
 
-  // const cart = useSelector(state => state.cart)
-  // let dispatch = useDispatch();
+  let dispatch = useDispatch();
 
+  useEffect(async () => {
+    let activefeeds = [];
+    let archivedfeeds = [];
 
-  useEffect(() => {
-    async function c() {
-      let data = await fetchFeeds();
-      for (let i = 0; i < await data.length; i++) {
-        let d = data[i];
-        if (d.is_archived === false) {
-          activefeeds.push(d)
-        } else {
-          archivedfeeds.push(d)
-        }
-        if (i + 1 === data.length) {
-          setActiveFeeds(activefeeds);
-          setArchivedFeeds(archivedfeeds);
-        }
+    let data = await fetchFeeds();
+    for (let i = 0; i < await data.length; i++) {
+      let d = data[i];
+      if (d.is_archived === false) {
+        activefeeds.push(d)
+      } else {
+        archivedfeeds.push(d)
+      }
+      if (i + 1 === data.length) {
+        dispatch(SetActiveFeeds({ activefeeds }));
+        dispatch(SetArchivedFeeds({ archivedfeeds }));
+        // setActiveFeeds(activefeeds);
+        // setArchivedFeeds(archivedfeeds);
       }
     }
-    c();
-  });
+    // activefeeds.length=0;
+    // archivedfeeds.length=0;
+  }, []);
+
+
+
+  console.log('myActiveFeeds: ', myActiveFeeds);
+  console.log('myArchivedFeeds: ', myArchivedFeeds);
+
 
   const fetchFeeds = async () => {
     let data = await axios('https://aircall-job.herokuapp.com/activities');
-    // console.log('Data: ', data.data);
     return data.data;
   }
 
-  let counter = ActiveFeeds.length + 1;
+  let counter = myActiveFeeds.length + 1;
 
   const archiveAll = () => {
-    ActiveFeeds.map((data, i) => {
+    myActiveFeeds.map((data, i) => {
       axios.post(`https://aircall-job.herokuapp.com/activities/${data.id}`, {
         is_archived: true
       })
         .then(function (response) {
           console.log(response);
+          App();
         })
         .catch(function (error) {
           console.log(error);
@@ -67,17 +81,18 @@ const App = () => {
     });
   }
 
-  const resetAll = () => {
-    axios.get('https://aircall-job.herokuapp.com/reset');
+  const resetAll = async () => {
+    await axios.get('https://aircall-job.herokuapp.com/reset');
   }
 
   return (
-    <Provider store={store}>
-      <div className='container'>
-        <Header heading="Activity" />
-        {/* call logs container */}
-        <div className="CallLogsContainer" style={{ backgroundColor: 'rgba(200,200,210,0.1)', height: '100%', paddingTop: 20, paddingRight: 20 }}>
-          {ActiveFeeds.length === 0 ?
+    <div className='container'>
+      <Header heading={Title} />
+      {/* call logs container */}
+      <div className="CallLogsContainer" style={{ backgroundColor: 'rgba(200,200,210,0.1)', height: '100%', paddingTop: 20, paddingRight: 20 }}>
+        {Title === "Active Feeds"
+          ?
+          myActiveFeeds.length === 0 ?
             <div onClick={() => { resetAll() }} className='archive_all_calls_container'>
               <RotateLeftIcon />
               <h1 className="archive_all_calls_text">
@@ -91,33 +106,40 @@ const App = () => {
                 Archive all calls
               </h1>
             </div>
-          }
-
-          {ActiveFeeds.map((data, i, length) => {
-            // if (data.is_archived === false) {
-            //   counter = counter + 2;
-            // } else if ((i + 1 === length && counter < 0 )|| ActiveFeeds.length === 0) {
-            //   counter = 0;
-            // }
-            return (
-              <Card key={data.id} isArchived={data.is_archived} from={data.from} to={data.to} id={data.id} time={data.created_at} duration={data.duration} callType={data.call_type} via={data.via} direction={data.direction} />
-            )
-          })}
-          <div style={{ marginBottom: 200 }}></div>
-          <div>
-            {ActiveFeeds.length === 0 ? <div className='no_items'>No active ActiveFeeds to show</div> : <></>}
+          :
+          <div onClick={() => { resetAll() }} className='archive_all_calls_container'>
+            <RotateLeftIcon />
+            <h1 className="archive_all_calls_text">
+              Reset all archived items
+            </h1>
           </div>
-        </div>
-        <div className="bottom_navigation_container">
-          <LabelBottomNavigation />
-        </div>
+        }
 
+        {Title === "Active Feeds" ?
+          myActiveFeeds.map((d, i, l) => {
+            return (
+              <Card key={d.id} d={d} />
+            )
+          })
+          :
+          myArchivedFeeds.map((d, i, l) => {
+            return (
+              <Card key={d.id} d={d} />
+            )
+          })
+        }
+        <div style={{ marginBottom: 200 }}></div>
+        <div>
+          {myActiveFeeds.length === 0 ? <div className='no_items'>No active ActiveFeeds to show</div> : <></>}
+        </div>
       </div>
-    </Provider>
-
+      <div className="bottom_navigation_container">
+        <LabelBottomNavigation />
+      </div>
+    </div>
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('app'));
 
 export default App;
