@@ -153,7 +153,7 @@ export default function Card(props) {
                                 </div>
                             </div>
 
-                            <div onClick={() => { archiveElement(props.id) }} className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0, } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26, }}>
+                            <div onClick={() => {archiveElement(props.id)}} className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
                                 <div className='call_details'>
                                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
                                         {props.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
