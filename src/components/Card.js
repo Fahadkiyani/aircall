@@ -5,9 +5,14 @@ import PhoneMissedIcon from '@mui/icons-material/PhoneMissed';
 import VoicemailIcon from '@mui/icons-material/Voicemail';
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ArchiveRoundedIcon from '@mui/icons-material/ArchiveRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import OutboundTwoToneIcon from '@mui/icons-material/OutboundTwoTone';
+import DirectionsIcon from '@mui/icons-material/Directions';
 
+import axios from 'axios';
 export default function Card(props) {
-
+    const [isArchiveShow, setIsArchiveShow] = React.useState(false)
 
     const CallType = () => {
         if (props.callType === "missed") {
@@ -94,7 +99,22 @@ export default function Card(props) {
                 {convertTo12H}
             </h3>
         )
+    }
 
+    const mouseEnters = () => {
+        setIsArchiveShow(!isArchiveShow)
+    }
+
+    const archiveElement = (id) => {
+        axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
+            is_archived: true
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
     return (
         <>
@@ -107,27 +127,52 @@ export default function Card(props) {
                         <div className='dottedLine'>
                         </div>
 
-                        <div className="Card">
-                            <div className="phone-icon">
-                                {/* <PhoneMissedIcon className="img" /> */}
-                                <CallType />
-                                {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
-                            </div>
-                            <div className={"call_info_container"}>
-                                <div className="user-name">
-                                    <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
-                                        {props.from}
-                                    </h1>
+                        <div className='card_container'>
+                            <div
+                                onClick={mouseEnters}
+                                className="Card"
+                                style={isArchiveShow === false ? {} : { borderBottomWidth: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}
+                            >
+
+                                <div className="phone-icon">
+                                    {/* <PhoneMissedIcon className="img" /> */}
+                                    <CallType />
+                                    {/* <img src="https://cdn-icons-png.flaticon.com/512/4293/4293305.png" alt="missed call"/> */}
                                 </div>
-                                <CalledTo />
+                                <div className={"call_info_container"}>
+                                    <div className="user-name">
+                                        <h1 style={{ fontSize: 14, fontWeight: '700', fontFamily: 'Ubuntu', color: '#555' }}>
+                                            {props.from}
+                                        </h1>
+                                    </div>
+                                    <CalledTo />
+                                </div>
+                                <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
+                                <div className="time_container">
+                                    <Time />
+                                </div>
                             </div>
-                            <MoreVertIcon style={{ color: 'grey', fontSize: 14, marginTop: 8 }} />
-                            <div className="time_container">
-                                <Time />
+
+                            <div onClick={() => { archiveElement(props.id) }} className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0, } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26, }}>
+                                <div className='call_details'>
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                        {props.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
+                                        <MoreVertIcon style={{ color: 'black', fontSize: 12 }} />
+                                        <DirectionsIcon />
+                                        {props.via}
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
+                                        <AccessTimeRoundedIcon /> <h6> 1Duration : </h6> <h5> {props.duration} min</h5>
+                                    </div>
+
+                                </div>
+                                <ArchiveRoundedIcon style={isArchiveShow === false ? { color: 'transparent', borderColor: 'transparent', } : { fontSize: 25, paddingTop: 15, paddingBottom: 15, paddingLeft: 15, paddingRight: 15, color: 'white', cursor: 'pointer', backgroundColor: 'black', borderRadius: 5, marginTop: -8 }} />
                             </div>
                         </div>
+
                     </>
-                    : <></>
+                    : 
+                    <></>
             }
         </>
 

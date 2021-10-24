@@ -9,14 +9,30 @@ import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone';
 
 import './css/app.css'
 
+let activefeeds = [];
+let archivedfeeds = [];
 const App = () => {
-  const [Feeds, setFeeds] = useState([]);
-  useEffect(async () => {
-    let data = await fetchFeeds();
-    console.log('Feeds: ', data);
-    setFeeds(data);
+  const [ActiveFeeds, setActiveFeeds] = useState([]);
+  const [ArchivedFeeds, setArchivedFeeds] = useState([]);
 
-  }, []);
+  useEffect(() => {
+    async function c() {
+      let data = await fetchFeeds();
+      for (let i = 0; i < await data.length; i++) {
+        let d = data[i];
+        if (d.is_archived === false) {
+          activefeeds.push(d)
+        } else {
+          archivedfeeds.push(d)
+        }
+        if (i + 1 === data.length) {
+          setActiveFeeds(activefeeds);
+          setArchivedFeeds(archivedfeeds);
+        }
+      }
+    }
+    c();
+  });
 
   const fetchFeeds = async () => {
     let data = await axios('https://aircall-job.herokuapp.com/activities');
@@ -26,30 +42,58 @@ const App = () => {
 
   let counter = -1;
 
+  const archiveAll = () => {
+    ActiveFeeds.map((data, i) => {
+      axios.post(`https://aircall-job.herokuapp.com/activities/${data.id}`, {
+        is_archived: true
+      })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    });
+  }
+
+  const resetAll = ()=>{
+    axios.get('https://aircall-job.herokuapp.com/reset');
+  }
+
   return (
     <div className='container'>
       <Header heading="Activity" />
       {/* call logs container */}
       <div className="CallLogsContainer" style={{ backgroundColor: 'rgba(200,200,210,0.1)', height: '100%', paddingTop: 20, paddingRight: 20 }}>
-        <div className='archive_all_calls_container' onClick={() => { alert('are you sure') }}>
-          <ArchiveTwoToneIcon />
-          <h1 className="archive_all_calls_text">
-            Archive all calls
-          </h1>
-        </div>
-        {/* <HeaderSubParts /> */}
-        {Feeds.map((data, i, length) => {
+        {ActiveFeeds.length === 0 ?
+          <div onClick={() => { resetAll() }} className='archive_all_calls_container'>
+            <ArchiveTwoToneIcon />
+            <h1 className="archive_all_calls_text">
+              Reset all archived items
+            </h1>
+          </div>
+          :
+          <div onClick={() => { archiveAll() }} className='archive_all_calls_container'>
+            <ArchiveTwoToneIcon />
+            <h1 className="archive_all_calls_text">
+              Archive all calls
+            </h1>
+          </div>
+        }
+
+        {ActiveFeeds.map((data, i, length) => {
           if (data.is_archived === false) {
             counter = counter + 2;
-          } else if (i + 1 === length && counter < 0) {
+          } else if ((i + 1 === length && counter < 0 )|| ActiveFeeds.length === 0) {
             counter = 0;
           }
           return (
-            <Card key={data.id} isArchived={data.is_archived} from={data.from} to={data.to} id={data.id} time={data.created_at} duration={data.duration} callType={data.call_type} />
+            <Card key={data.id} isArchived={data.is_archived} from={data.from} to={data.to} id={data.id} time={data.created_at} duration={data.duration} callType={data.call_type} via={data.via} direction={data.direction} />
           )
         })}
+        <div style={{ marginBottom: 200 }}></div>
         <div>
-          {counter === 0 ? <div style={{ width: '100%', height: 60, display: 'flex', justifyContent: 'center', alightItems: 'flex-end' }}>No active feeds to show</div> : <></>}
+          {counter <= 0 ? <div className='no_items'>No active ActiveFeeds to show</div> : <></>}
         </div>
       </div>
       <div className="bottom_navigation_container">
