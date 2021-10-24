@@ -162,7 +162,7 @@ export default function Card(props) {
                                         {props.via}
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
-                                        <AccessTimeRoundedIcon /> <h6> 1Duration : </h6> <h5> {props.duration} min</h5>
+                                        <AccessTimeRoundedIcon /> <h6> Duration : </h6> <h5> {props.duration} min</h5>
                                     </div>
 
                                 </div>
@@ -171,7 +171,7 @@ export default function Card(props) {
                         </div>
 
                     </>
-                    : 
+                    :
                     <></>
             }
         </>
