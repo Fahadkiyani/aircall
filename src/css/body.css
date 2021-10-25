@@ -7,11 +7,9 @@ html, body, h1, h2, h3, ul, li {
 }
 
 body {
-  /* background: #233142; */
   background-color: rgba(180, 180, 180, 0.2);
   font-family: helvetica, arial, sans-serif;
   font-size: 13px;
-  /* height: 100vh; */
   padding: 20px auto;
   color: #333333;
   line-height: 1;

@@ -15,18 +15,14 @@ import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
 // import SetActiveFeedsToArchive from '../Redux/API_Data';
-import { SetArchivedFeeds, SetActiveFeeds,SetArchivedFeedsToActive , SetActiveFeedsToArchive } from '../Redux/API_Data.js';
+import { SetArchivedFeedsToActive, SetActiveFeedsToArchive } from '../Redux/API_Data.js';
 
 
 export default function Card({ d }) {
 
     const [isArchiveShow, setIsArchiveShow] = React.useState(false);
-    const [elementDelete, setElementDelete] = React.useState(false);
-    const [expandMe, setExpandMe] = React.useState(0)
 
     // selecting values from redux store
-    const myActiveFeeds = useSelector(state => state.API_Data.ActiveFeeds);
-    const myArchivedFeeds = useSelector(state => state.API_Data.ArchivedFeeds);
     const Title = useSelector(state => state.changeSlice.title);
 
     // dispatch variable
@@ -124,12 +120,12 @@ export default function Card({ d }) {
     }
 
     const archiveElement = async (id) => {
-    await axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
+        await axios.post(`https://aircall-job.herokuapp.com/activities/${id}`, {
             is_archived: true
         })
             .then(function (response) {
                 console.log(response);
-                dispatch(SetActiveFeedsToArchive({id:id}))
+                dispatch(SetActiveFeedsToArchive({ id: id }))
             })
             .catch(function (error) {
                 console.log(error);
@@ -140,7 +136,7 @@ export default function Card({ d }) {
             is_archived: false
         }).then(function (response) {
             console.log(response);
-            dispatch(SetArchivedFeedsToActive({id:id}))
+            dispatch(SetArchivedFeedsToActive({ id: id }))
         })
             .catch(function (error) {
                 console.log(error);
@@ -184,7 +180,8 @@ export default function Card({ d }) {
                         </div>
                     </div>
 
-                    <div className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
+                    {/* eslint-disable-next-line */}
+                    <div className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, (isArchiveShow === false) ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
                         <div className='call_details'>
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>
                                 {d.direction === 'outbound' ? <OutboundTwoToneIcon /> : <OutboundTwoToneIcon style={{ transform: "rotate(0.5turn)" }} />}
@@ -236,6 +233,7 @@ export default function Card({ d }) {
                         </div>
                     </div>
 
+                    {/* eslint-disable-next-line */}
                     <div className="archive_element" style={{ backgroundColor: 'white', color: 'red' }, isArchiveShow === false ? { visibility: 'hidden', height: 0 } : { visibility: 'visible', height: 50, border: ' 2px solid rgba(200, 200, 200, 0.51)', borderTopWidth: 0, marginBottom: 26 }}>
                         <div className='call_details'>
                             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', width: '100%', alignItems: 'center' }}>

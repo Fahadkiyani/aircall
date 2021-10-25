@@ -4,7 +4,7 @@ import Card from './components/Card.js';
 import axios from 'axios';
 import Header from './Header.jsx';
 import LabelBottomNavigation from './components/bottomNavigator/BottomNavigator';
-import HeaderSubParts from './components/HeaderSubParts/HeaderSubParts'
+// import HeaderSubParts from './components/HeaderSubParts/HeaderSubParts'
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveTwoTone';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
@@ -13,7 +13,7 @@ import store from './Redux/store';
 import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { SetArchivedFeeds, SetActiveFeeds } from './Redux/API_Data.js';
+import { SetArchivedFeeds, SetActiveFeeds, SetActiveFeedsToArchive } from './Redux/API_Data.js';
 
 import './css/app.css'
 
@@ -21,6 +21,8 @@ import './css/app.css'
 
 
 const App = () => {
+  const [shouldFetch, setShouldFetch] = useState(false);
+
   // Reading Data from Redux store. 
   const myActiveFeeds = useSelector(state => state.API_Data.ActiveFeeds);
   const myArchivedFeeds = useSelector(state => state.API_Data.ArchivedFeeds);
@@ -28,43 +30,50 @@ const App = () => {
 
   let dispatch = useDispatch();
 
-  useEffect(async () => {
+  // eslint-disable-next-line
+  useEffect(() => {
     let activefeeds = [];
     let archivedfeeds = [];
-
-    let data = await fetchFeeds();
-    for (let i = 0; i < await data.length; i++) {
-      let d = data[i];
-      if (d.is_archived === false) {
-        activefeeds.push(d)
-      } else {
-        archivedfeeds.push(d)
-      }
-      if (i + 1 === data.length) {
-        dispatch(SetActiveFeeds({ activefeeds }));
-        dispatch(SetArchivedFeeds({ archivedfeeds }));
+    const FetchDataNow = async () => {
+      let data = await fetchFeeds();
+      for (let i = 0; i < await data.length; i++) {
+        let d = data[i];
+        if (d.is_archived === false) {
+          activefeeds.push(d)
+        } else {
+          archivedfeeds.push(d)
+        }
+        if (i + 1 === data.length) {
+          dispatch(SetActiveFeeds({ activefeeds }));
+          dispatch(SetArchivedFeeds({ archivedfeeds }));
+        }
       }
     }
+    FetchDataNow();
   }, []);
 
+  // eslint-disable-next-line
   useEffect(async () => {
     let activefeeds = [];
     let archivedfeeds = [];
-
-    let data = await fetchFeeds();
-    for (let i = 0; i < await data.length; i++) {
-      let d = data[i];
-      if (d.is_archived === false) {
-        activefeeds.push(d)
-      } else {
-        archivedfeeds.push(d)
-      }
-      if (i + 1 === data.length) {
-        dispatch(SetActiveFeeds({ activefeeds }));
-        dispatch(SetArchivedFeeds({ archivedfeeds }));
+    const FetchDataNow = async () => {
+      let data = await fetchFeeds();
+      for (let i = 0; i < await data.length; i++) {
+        let d = data[i];
+        if (d.is_archived === false) {
+          activefeeds.push(d)
+        } else {
+          archivedfeeds.push(d)
+        }
+        if (i + 1 === data.length) {
+          dispatch(SetActiveFeeds({ activefeeds }));
+          dispatch(SetArchivedFeeds({ archivedfeeds }));
+        }
       }
     }
-  });
+    FetchDataNow();
+    setShouldFetch(false);
+  }, [Title, myArchivedFeeds.length, myActiveFeeds.length, shouldFetch]);
 
 
 
@@ -77,16 +86,15 @@ const App = () => {
     return data.data;
   }
 
-  let counter = myActiveFeeds.length + 1;
-
   const archiveAll = () => {
+    // eslint-disable-next-line
     myActiveFeeds.map((data, i) => {
       axios.post(`https://aircall-job.herokuapp.com/activities/${data.id}`, {
         is_archived: true
       })
         .then(function (response) {
           console.log(response);
-          App();
+          dispatch(SetActiveFeedsToArchive({ id: data.id }))
         })
         .catch(function (error) {
           console.log(error);
@@ -96,25 +104,8 @@ const App = () => {
 
   const resetAll = async () => {
     await axios.get('https://aircall-job.herokuapp.com/reset');
+    setShouldFetch(true)
   }
-
-  // const CardFetch = () => {
-  //   if (Title === "Active Feeds" && myActiveFeeds.length>0) {
-  //     for (let i = 0; i < myActiveFeeds.length; i++) {
-  //       const d = myActiveFeeds[i];
-  //       return(<Card key={d.id} d={d} />)
-  //     }
-  //   }else if(Title === "Archived" && myArchivedFeeds.length>0){
-  //     for (let i = 0; i < myArchivedFeeds.length; i++) {
-  //       const d = myArchivedFeeds[i];
-  //       return(<Card key={d.id} d={d} />)
-  //     }
-  //   }else{
-  //    return <h1>There is no element to show.</h1>
-  //   }
-
-
-  // }
 
   return (
     <div className='container'>

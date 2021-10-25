@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import React from 'react';
 
 const initialState = { ActiveFeeds: [], ArchivedFeeds: [] };
 
@@ -14,6 +13,7 @@ const API_Data = createSlice({
       state.ArchivedFeeds = action.payload.archivedfeeds;
     },
     SetActiveFeedsToArchive(state, action) {
+    // eslint-disable-next-line
       state.ActiveFeeds.map((d, i, l) => {
         if (d.id === action.payload.id) {
           state.ArchivedFeeds.push(state.ActiveFeeds[i]);
@@ -22,6 +22,7 @@ const API_Data = createSlice({
       })
     },
     SetArchivedFeedsToActive(state, action) {
+      // eslint-disable-next-line
       state.ArchivedFeeds.map((d, i, l) => {
         if (d.id === action.payload.id) {
           state.ActiveFeeds.push(state.ActiveFeeds[i]);

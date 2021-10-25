@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import React from 'react';
 
 const initialState = {title:'Active Feeds',reload:false}
 
@@ -9,12 +8,7 @@ const changeSlice = createSlice({
   reducers: {
     changeTitle(state,action){
       state.title = action.payload.title;
-
-    },
-    changeReload(state,action){
-      state.reload = action.payload.reload;
-      console.log('reload ran and return value:',state.reload);
-    },
+    }
   }
 
 })
