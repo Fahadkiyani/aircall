@@ -47,6 +47,25 @@ const App = () => {
     }
   }, []);
 
+  useEffect(async () => {
+    let activefeeds = [];
+    let archivedfeeds = [];
+
+    let data = await fetchFeeds();
+    for (let i = 0; i < await data.length; i++) {
+      let d = data[i];
+      if (d.is_archived === false) {
+        activefeeds.push(d)
+      } else {
+        archivedfeeds.push(d)
+      }
+      if (i + 1 === data.length) {
+        dispatch(SetActiveFeeds({ activefeeds }));
+        dispatch(SetArchivedFeeds({ archivedfeeds }));
+      }
+    }
+  });
+
 
 
   console.log('myActiveFeeds: ', myActiveFeeds);
@@ -79,6 +98,24 @@ const App = () => {
     await axios.get('https://aircall-job.herokuapp.com/reset');
   }
 
+  // const CardFetch = () => {
+  //   if (Title === "Active Feeds" && myActiveFeeds.length>0) {
+  //     for (let i = 0; i < myActiveFeeds.length; i++) {
+  //       const d = myActiveFeeds[i];
+  //       return(<Card key={d.id} d={d} />)
+  //     }
+  //   }else if(Title === "Archived" && myArchivedFeeds.length>0){
+  //     for (let i = 0; i < myArchivedFeeds.length; i++) {
+  //       const d = myArchivedFeeds[i];
+  //       return(<Card key={d.id} d={d} />)
+  //     }
+  //   }else{
+  //    return <h1>There is no element to show.</h1>
+  //   }
+
+
+  // }
+
   return (
     <div className='container'>
       <Header heading={Title} />
@@ -108,23 +145,28 @@ const App = () => {
             </h1>
           </div>
         }
-
-        {Title === "Active Feeds" ?
+        {/* send data to card and return components from it */}
+        {(Title === "Active Feeds") ?
           myActiveFeeds.map((d, i, l) => {
-            return (
-              <Card key={d.id} d={d} />
-            )
+            if (myActiveFeeds.length > 0) {
+              return <Card key={d.id} d={d} />
+            } else {
+              return <div className='no_items'>No active ActiveFeeds to show</div>
+            }
           })
           :
           myArchivedFeeds.map((d, i, l) => {
-            return (
-              <Card key={d.id} d={d} />
-            )
+            if (myArchivedFeeds.length > 0) {
+              return <Card key={d.id} d={d} />
+            } else {
+              return <div className='no_items'>No active ActiveFeeds to show</div>
+            }
           })
         }
+
         <div style={{ marginBottom: 200 }}></div>
         <div>
-          {myActiveFeeds.length === 0 ? <div className='no_items'>No active ActiveFeeds to show</div> : <></>}
+          {/* {myActiveFeeds.length === 0 ? <div className='no_items'>No active ActiveFeeds to show</div> : <></>} */}
         </div>
       </div>
       <div className="bottom_navigation_container">

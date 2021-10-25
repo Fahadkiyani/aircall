@@ -14,7 +14,7 @@
     padding: 12px 0 12px 15px;
     border: 2px solid rgba(200, 200, 200, 0.51);
     border-radius: 16px;
-    transition: all 600ms ease-in-out;
+    transition: all 300ms ;
 }
 
 /* archive */
@@ -26,7 +26,7 @@
     width: calc(100% - 30px);
     margin: 0 15px 0 15px;
     padding: 12px 0 12px 15px;
-    transition: all 600ms ease-in-out;
+    transition: all 200ms ease-in-out;
     visibility: hidden;
     /* border: 2px solid rgba(10, 170, 50, 0.51); */
     border-bottom-left-radius: 16px;
